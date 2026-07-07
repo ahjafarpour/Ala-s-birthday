@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Happy Birthday</title>
+
+<!--
+  ================================================================
+  HOW TO CUSTOMIZE THIS PAGE (see README.md for full details)
+  ================================================================
+  1. FONT   -> drop your Agera font files into /fonts and check the
+               @font-face rules at the top of style.css.
+  2. NAME   -> replace "[Name]" below (two spots) with the recipient's name.
+  3. PHOTOS -> replace the src="images/photo-1.jpg" etc. paths with your
+               own images. Add/remove <div class="photo"> blocks freely.
+  4. SONG   -> replace audio/your-song.mp3 with your own audio file.
+  5. TIMING/COLORS -> tweak the CONFIG block at the top of script.js and
+               the :root variables at the top of style.css.
+  ================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="stage" id="stage">
+
+    <!-- Thin Art Deco corner frame (purely decorative) -->
+    <span class="corner corner-tl"></span>
+    <span class="corner corner-tr"></span>
+    <span class="corner corner-bl"></span>
+    <span class="corner corner-br"></span>
+
+    <!-- Slowly rotating sunburst behind everything; rays are drawn by script.js -->
+    <svg class="sunburst" id="sunburst" viewBox="0 0 800 800" aria-hidden="true">
+      <g id="sunburstRays"></g>
+    </svg>
+
+    <!-- Photos float in here once the envelope is opened -->
+    <div class="photo-field" id="photoField" aria-hidden="false">
+      <!--
+        Add, remove, or edit these blocks. Each one just needs an <img src="...">
+        pointing at a real photo. Positions and gentle drifting motion are
+        assigned randomly by script.js, so you don't need to set any of that.
+      -->
+      <div class="photo"><img src="images/photo-1.jpg" alt="Birthday memory 1"></div>
+      <div class="photo"><img src="images/photo-2.jpg" alt="Birthday memory 2"></div>
+      <div class="photo"><img src="images/photo-3.jpg" alt="Birthday memory 3"></div>
+      <div class="photo"><img src="images/photo-4.jpg" alt="Birthday memory 4"></div>
+      <div class="photo"><img src="images/photo-5.jpg" alt="Birthday memory 5"></div>
+      <div class="photo"><img src="images/photo-6.jpg" alt="Birthday memory 6"></div>
+      <div class="photo"><img src="images/photo-7.jpg" alt="Birthday memory 6"></div>
+      <div class="photo"><img src="images/photo-8.jpg" alt="Birthday memory 6"></div>
+    </div>
+
+    <!-- Envelope + prompt -->
+    <div class="envelope-wrap" id="envelopeWrap">
+      <p class="tap-text" id="tapText">Tap to open it<span class="name"></span></p>
+
+      <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open your birthday envelope">
+        <svg class="envelope-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="5" y="5" width="290" height="190" rx="22" ry="22" class="env-base"></rect>
+          <path d="M14 30 L150 132 L286 30" class="env-flap"></path>
+          <circle cx="150" cy="118" r="23" class="env-seal"></circle>
+          <path d="M150 129c-11-8-19-15-19-23.5 0-6.5 5.3-11 11-11 4.3 0 7.8 2.3 8.8 6.6C151.8 96.8 155.3 94.5 159.6 94.5c5.7 0 11 4.5 11 11 0 8.5-8 15.5-19 23.5z" class="env-heart"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Final birthday message -->
+    <h1 class="final-message" id="finalMessage"><p id="text"></p>
+
+<script>
+const lines = [
+  
+    
+    "Happy Birthday to you, Ala!",
+    "I wish you all the success and happiness in the world.",
+    "You have such a kind and respectful personality and ",
+    "The way you treat me is so special that it makes me fall for you even more.",
+    "In this short time, I've come to realize so many things about you how incredibly beautiful you are, both inside and out.",
+    "You're truly one of a kind.",
+    "You're the most special person I've ever had the chance to meet, and I sincerely hope we get to share many wonderful days together.",
+    "From Love <3"
+];
+
+const speed = 50;
+let line = 0;
+
+function typeLine() {
+    let i = 0;
+    document.getElementById("text").innerHTML = "";
+
+    function type() {
+        if (i < lines[line].length) {
+            document.getElementById("text").innerHTML += lines[line][i++];
+            setTimeout(type,speed );
+        } else {
+            setTimeout(() => {
+                line++;
+                if (line < lines.length)
+                    typeLine();
+            }, 1800); // مکث بین جملات
+        }
+    }
+
+    type();
+}
+
+setTimeout(typeLine, 10000);
+</script><br><span class="name"></span>!</h1>
+
+  </main>
+
+  <!-- Replace this with your own song. Keeping the id/loop is enough; the file itself is up to you. -->
+  <audio id="bgm" src="audio/Misanthrope River (1).mp3" >
+
+<script>
+const audio = document.getElementById("bgm");
+
+audio.addEventListener("loadedmetadata", () => {
+    audio.currentTime = 268;   
+    audio.volume = 0;         
+
+    audio.play();
+
+    // فید این در مدت 3 ثانیه
+    let volume = 0;
+    const fade = setInterval(() => {
+        volume += 0.03;
+        if (volume >= 1) {
+            volume = 1;
+            clearInterval(fade);
+        }
+        audio.volume = volume;
+    }, 120);
+});
+</script>
+    
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>

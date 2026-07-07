@@ -1,0 +1,249 @@
+/* ============================================================
+   FONT
+   Agera Gothic is an Art Deco display face — this @font-face
+   block just needs your real font files dropped into /fonts.
+   If you only have one weight, delete the 700 block below; the
+   browser will synthesize bold instead.
+   Until the real files are added, the page falls back to
+   Josefin Sans (loaded in index.html), which shares the same
+   clean, geometric, deco-ish character.
+   ============================================================ */
+@font-face {
+  font-family: 'Agera';
+  src: url('fonts/Agera-Regular.woff2') format('woff2'),
+       url('fonts/Agera-Regular.woff')  format('woff'),
+       url('fonts/Agera-Regular.otf')   format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Agera';
+  src: url('fonts/Agera-Bold.woff2') format('woff2'),
+       url('fonts/Agera-Bold.otf')   format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root{
+  --black:        #060606;
+  --black-soft:   #0f0f0f;
+  --white:        #F5F3EE;
+  --white-pure:   #FFFFFF;
+  --red:          #C81E3A;
+  --red-bright:   #E63950;
+  --envelope:     #e2bebe;
+  --envelope29:   #ff0000;
+  --envelope-shade: #E7D9A4;
+
+  --font-display: 'Agera', 'Josefin Sans', 'Helvetica Neue', sans-serif;
+
+  --ease-smooth: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*{ box-sizing: border-box; }
+html, body{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--black);
+  overscroll-behavior: none;
+}
+body{
+  font-family: var(--font-display);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   STAGE
+   ============================================================ */
+.stage{
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 45%, var(--black-soft) 0%, var(--black) 68%);
+}
+
+/* thin Art Deco corner frame */
+.corner{
+  position: fixed;
+  width: 44px;
+  height: 44px;
+  opacity: 0;
+  border: 1px solid transparent;
+  transition: opacity 1.8s ease .2s;
+  pointer-events: none;
+  z-index: 3;
+}
+.corner.show{ opacity: .5; }
+.corner-tl{ top: 22px;    left: 22px;  border-top-color: var(--red);    border-left-color: var(--red); }
+.corner-tr{ top: 22px;    right: 22px; border-top-color: var(--red);    border-right-color: var(--red); }
+.corner-bl{ bottom: 22px; left: 22px;  border-bottom-color: var(--red); border-left-color: var(--red); }
+.corner-br{ bottom: 22px; right: 22px; border-bottom-color: var(--red); border-right-color: var(--red); }
+
+/* slow ambient sunburst, sitting behind everything else */
+.sunburst{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(120vw, 900px);
+  height: min(120vw, 900px);
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 2.4s ease .3s;
+  animation: spin 140s linear infinite;
+}
+.sunburst.show{ opacity: 1; }
+.sunburst line{
+  stroke: var(--red);
+  stroke-width: 1;
+  opacity: .16;
+}
+@keyframes spin{
+  from{ transform: translate(-50%, -50%) rotate(0deg); }
+  to{   transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ============================================================
+   ENVELOPE
+   ============================================================ */
+.envelope-wrap{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  opacity: 0;
+  z-index: 4;
+  transition: opacity 1.5s var(--ease-smooth), transform 1.5s var(--ease-smooth);
+}
+.envelope-wrap.show{
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.envelope-wrap.closing{
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.88) translateY(-14px);
+  transition: opacity .9s ease, transform .9s ease;
+  pointer-events: none;
+}
+
+.tap-text{
+  margin: 0;
+  font-size: clamp(0.95rem, 3vw, 1.25rem);
+  letter-spacing: .04em;
+  color: var(--white);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.5s ease;
+}
+.tap-text .name{ color: var(--red-bright); }
+.tap-text.show{ opacity: .9; transform: translateY(0); }
+.tap-text.hide{ opacity: 0; transform: translateY(-6px); transition: opacity .6s ease, transform .6s ease; }
+
+.envelope{
+  width: min(72vw, 300px);
+  aspect-ratio: 300 / 200;
+  cursor: pointer;
+  filter: drop-shadow(0 18px 46px rgba(0,0,0,.55)) drop-shadow(0 0 34px rgba(200,30,58,.18));
+  transition: transform .35s ease;
+}
+.envelope:hover{ transform: translateY(-4px); }
+.envelope:active{ transform: translateY(-1px) scale(.98); }
+.envelope:focus-visible{ outline: 2px solid var(--red-bright); outline-offset: 8px; }
+
+.envelope-svg{ width: 100%; height: 100%; display: block; }
+.env-base{ fill: var(--envelope); }
+.env-flap{ fill: none; stroke: var(--envelope-shade); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.env-seal{ fill: var(--red); }
+.env-heart{ fill: var(--envelope); }
+
+/* ============================================================
+   PHOTOS
+   ============================================================ */
+.photo-field{
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.photo{
+  position: absolute;
+  top: var(--top, 50%);
+  left: var(--left, 50%);
+  width: clamp(96px, 20vw, 160px);
+  opacity: 0;
+  transition: opacity 1s ease, transform 3s ease-in-out;
+  will-change: transform;
+}
+.photo.show{ opacity: 1; }
+.photo img{
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  background: var(--black-soft); /* visible placeholder tone until a real photo is added */
+  border: 6px solid var(--white-pure);
+  border-radius: 6px;
+  box-shadow: 0 14px 34px rgba(0,0,0,.6);
+  transform: rotate(var(--r, 0deg)) scale(.7);
+  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.photo.show img{ transform: rotate(var(--r, 0deg)) scale(1); }
+
+/* ============================================================
+   FINAL MESSAGE
+   ============================================================ */
+.final-message{
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.5rem;
+  line-height: 1.25;
+  font-weight: 500;
+  font-size: clamp(1rem, 3vw, 2.2rem);
+  color: var(--envelope29);
+  text-shadow: 0 0 40px rgba(200,30,58,.45), 0 0 90px rgba(200,30,58,.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease;
+}
+.final-message .name{ color: var(--red-bright); }
+.final-message.show{ opacity: 1; }
+
+/* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  .sunburst{ animation: none; }
+  .envelope-wrap, .tap-text, .photo, .photo img, .final-message, .corner{
+    transition-duration: .25s !important;
+  }
+}
+
+/* ============================================================
+   SMALL SCREENS
+   ============================================================ */
+@media (max-width: 420px){
+  .corner{ width: 32px; height: 32px; top: 14px !important; bottom: 14px !important; left: 14px !important; right: 14px !important; }
+}
